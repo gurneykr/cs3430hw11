@@ -2,17 +2,17 @@
 
 ########################################
 # module: cs3430_s19_hw11.py
-# YOUR NAME
-# YOUR A#
+# Krista Gurney
+# A01671888
 ########################################
 
 ## add your imports here
 import math
-import Image
+from PIL import Image
 import sys
 import numpy as np
 import cv2
-'''
+
 from tof import tof
 from const import const
 from var import var
@@ -22,7 +22,7 @@ from maker import make_plus, make_ln, make_absv
 from maker import make_pwr_expr, make_e_expr
 from plus import plus
 from prod import prod
-'''
+
 
 ################# Problem 1 (1 point) ###################
 
