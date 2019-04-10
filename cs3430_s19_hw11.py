@@ -22,13 +22,20 @@ from maker import make_plus, make_ln, make_absv
 from maker import make_pwr_expr, make_e_expr
 from plus import plus
 from prod import prod
+from deriv import deriv
 
 
 ################# Problem 1 (1 point) ###################
 
 def nra(poly_fexpr, g, n):
-    ## your code here
-    pass
+    tof_expr = tof(poly_fexpr)
+    deriv_expr = tof(deriv(poly_fexpr))
+
+    for i in range(n.get_val()):
+        x = g.get_val() - (tof_expr(g.get_val())/deriv_expr(g.get_val()))
+        g = const(x)
+
+    return g
 
 ################# Unit Tests for Problem 1 ###################
 
@@ -240,6 +247,6 @@ def ht_test_12(img_fp, magn_thresh=20, spl=20):
     del edimg
     
 if __name__ == '__main__':
-    pass
+    nra_ut_10()
 
 
