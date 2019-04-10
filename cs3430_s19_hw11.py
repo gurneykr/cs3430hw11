@@ -144,8 +144,15 @@ def ht_detect_lines(img_fp, magn_thresh=20, spl=20):
     ## your code here
     input_image = Image.open(img_fp)
     edges = gd_detect_edges(input_image, magn_thresh=20)
-    return edges
-    # pass
+    edges.save('output.png')
+    del input_image
+
+    # return edges
+    #1. create a rho-theta table
+    #2. compute gradients
+    #3. compute HT values
+    #4.
+    # return edges
 ################ Unit Tests for Problem 2 ####################
 ##        
 ## I used Image for edge detection and numpy image representation
@@ -155,15 +162,15 @@ def ht_detect_lines(img_fp, magn_thresh=20, spl=20):
 ## of these tests the same.
         
 def ht_test_01(img_fp, magn_thresh=20, spl=20):
-    img, lnimg, edimg, ht = ht_detect_lines(img_fp,
-                                             magn_thresh=magn_thresh,
-                                             spl=spl)
-    # lnimg = ht_detect_lines(img_fp, magn_thresh, spl)
+    # img, lnimg, edimg, ht = ht_detect_lines(img_fp,
+    #                                          magn_thresh=magn_thresh,
+    #                                          spl=spl)
+    lnimg = ht_detect_lines(img_fp, magn_thresh, spl)
     cv2.imwrite('im01_ln.png', lnimg)
-    edimg.save('im01_ed.png')
-    del img
+    # edimg.save('im01_ed.png')
+    # del img
     del lnimg
-    del edimg
+    # del edimg
 
 def ht_test_02(img_fp, magn_thresh=20, spl=20):
     img, lnimg, edimg, ht = ht_detect_lines(img_fp,
@@ -277,5 +284,4 @@ def ht_test_12(img_fp, magn_thresh=20, spl=20):
     
 if __name__ == '__main__':
     ht_test_01('img/kitchen.jpeg', magn_thresh=20, spl=20)
-
-
+    pass
