@@ -113,11 +113,39 @@ def nra_ut_10():
 
 
 # =================== Problem 2 (4 points) ===================
+def gd_detect_edges(rgb_img, magn_thresh=20):
+    ## gray scale image
+    greyed = rgb_img.convert('L')
+    img = Image.new('L', greyed.size)
+
+    for row in range(img.size[0]):
+        if row > 0:
+            for col in range(img.size[1]):
+                if col > 1 and col < greyed.size[1]-1 and row > 1 and row < greyed.size[0]-1:
+                    # pixel = greyed.getpixel((row, col))
+                    above = greyed.getpixel((row-1, col))
+                    below = greyed.getpixel((row+1, col))
+                    right = greyed.getpixel((row, col+1))
+                    left = greyed.getpixel((row, col-1))
+                    dy = above - below
+                    dx = right - left
+                    if dx == 0:
+                        dx = 1
+                    G = math.sqrt(dy**2 + dx**2)
+                    if G > magn_thresh:
+                        img.putpixel((row, col), 255)
+                    else:
+                        img.putpixel((row, col), 0)
+
+    return img
+
 
 def ht_detect_lines(img_fp, magn_thresh=20, spl=20):
     ## your code here
-    pass
-
+    input_image = Image.open(img_fp)
+    edges = gd_detect_edges(input_image, magn_thresh=20)
+    return edges
+    # pass
 ################ Unit Tests for Problem 2 ####################
 ##        
 ## I used Image for edge detection and numpy image representation
@@ -128,8 +156,9 @@ def ht_detect_lines(img_fp, magn_thresh=20, spl=20):
         
 def ht_test_01(img_fp, magn_thresh=20, spl=20):
     img, lnimg, edimg, ht = ht_detect_lines(img_fp,
-                                            magn_thresh=magn_thresh,
-                                            spl=spl)
+                                             magn_thresh=magn_thresh,
+                                             spl=spl)
+    # lnimg = ht_detect_lines(img_fp, magn_thresh, spl)
     cv2.imwrite('im01_ln.png', lnimg)
     edimg.save('im01_ed.png')
     del img
@@ -247,6 +276,6 @@ def ht_test_12(img_fp, magn_thresh=20, spl=20):
     del edimg
     
 if __name__ == '__main__':
-    nra_ut_10()
+    ht_test_01('img/kitchen.jpeg', magn_thresh=20, spl=20)
 
 
