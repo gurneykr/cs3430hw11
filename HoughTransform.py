@@ -3,7 +3,7 @@ import numpy as np
 def hough_line(img):
   # Rho and Theta ranges
   thetas = np.deg2rad(np.arange(-90.0, 90.0))
-  width, height = img.shape
+  width, height = img.size
   diag_len = np.ceil(np.sqrt(width * width + height * height))   # max_dist
   rhos = np.linspace(-diag_len, diag_len, diag_len * 2.0)
 

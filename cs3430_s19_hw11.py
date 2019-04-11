@@ -144,16 +144,20 @@ def ht_detect_lines(img_fp, magn_thresh=20, spl=20):
     ## your code here
     input_image = Image.open(img_fp)
     edimg = gd_detect_edges(input_image, magn_thresh=20)
-
+    # print("shape: ",edimg.shape)
     HT = hough_line(edimg)
-    blue_line_img = img_fp.copy()
+    blue_line_img = input_image.copy()
 
     for rho in range(HT.shape[0]):
         for theta in range(HT.shape[1]):
             if HT[rho, theta] >= spl:
-                x = int(rho * math.cos(theta))
-                y = int(rho * math.sin(theta))
-                blue_line_img.putpixel((x, y), (0, 0, 255))
+                x = abs(int(rho * math.cos(theta)))
+                y = abs(int(rho * math.sin(theta)))
+                if (x < blue_line_img.size[0] and y < blue_line_img.size[1]):
+                    blue_line_img.putpixel((x, y), (0, 0, 255))
+                else:
+                    print('out of bounds')
+                # blue_line_img.putpixel((x, y), (0, 0, 255))
 
 
     return img_fp, blue_line_img, edimg, HT
@@ -180,7 +184,7 @@ def ht_test_01(img_fp, magn_thresh=20, spl=20):
                                              magn_thresh=magn_thresh,
                                              spl=spl)
     # lnimg = ht_detect_lines(img_fp, magn_thresh, spl)
-    cv2.imwrite('im01_ln.png', lnimg)
+    lnimg.save('im01_ln.png')
     edimg.save('im01_ed.png')
     del img
     del lnimg
@@ -297,5 +301,5 @@ def ht_test_12(img_fp, magn_thresh=20, spl=20):
     del edimg
     
 if __name__ == '__main__':
-    ht_test_01('img/kitchen.jpeg', magn_thresh=20, spl=20)
+    ht_test_01('img/horline.png', magn_thresh=20, spl=20)
     pass
