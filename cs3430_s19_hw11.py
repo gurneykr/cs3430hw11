@@ -23,7 +23,7 @@ from maker import make_pwr_expr, make_e_expr
 from plus import plus
 from prod import prod
 from deriv import deriv
-
+from HoughTransform import hough_line
 
 ################# Problem 1 (1 point) ###################
 
@@ -143,12 +143,26 @@ def gd_detect_edges(rgb_img, magn_thresh=20):
 def ht_detect_lines(img_fp, magn_thresh=20, spl=20):
     ## your code here
     input_image = Image.open(img_fp)
-    edges = gd_detect_edges(input_image, magn_thresh=20)
-    edges.save('output.png')
-    del input_image
+    edimg = gd_detect_edges(input_image, magn_thresh=20)
+
+    HT = hough_line(edimg)
+    blue_line_img = img_fp.copy()
+
+    for rho in range(HT.shape[0]):
+        for theta in range(HT.shape[1]):
+            if HT[rho, theta] >= spl:
+                x = int(rho * math.cos(theta))
+                y = int(rho * math.sin(theta))
+                blue_line_img.putpixel((x, y), (0, 0, 255))
+
+
+    return img_fp, blue_line_img, edimg, HT
+
+    # del input_image
 
     # return edges
     #1. create a rho-theta table
+
     #2. compute gradients
     #3. compute HT values
     #4.
@@ -162,15 +176,15 @@ def ht_detect_lines(img_fp, magn_thresh=20, spl=20):
 ## of these tests the same.
         
 def ht_test_01(img_fp, magn_thresh=20, spl=20):
-    # img, lnimg, edimg, ht = ht_detect_lines(img_fp,
-    #                                          magn_thresh=magn_thresh,
-    #                                          spl=spl)
-    lnimg = ht_detect_lines(img_fp, magn_thresh, spl)
+    img, lnimg, edimg, ht = ht_detect_lines(img_fp,
+                                             magn_thresh=magn_thresh,
+                                             spl=spl)
+    # lnimg = ht_detect_lines(img_fp, magn_thresh, spl)
     cv2.imwrite('im01_ln.png', lnimg)
-    # edimg.save('im01_ed.png')
-    # del img
+    edimg.save('im01_ed.png')
+    del img
     del lnimg
-    # del edimg
+    del edimg
 
 def ht_test_02(img_fp, magn_thresh=20, spl=20):
     img, lnimg, edimg, ht = ht_detect_lines(img_fp,
