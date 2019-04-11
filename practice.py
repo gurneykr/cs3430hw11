@@ -13,7 +13,7 @@ def hough_line(img):
   num_thetas = len(thetas)
 
   # Hough accumulator array of theta vs rho
-  accumulator = np.zeros((2 * diag_len, num_thetas), dtype=np.uint64)
+  accumulator = np.zeros((int(2 * diag_len), num_thetas), dtype=np.uint64)
   y_idxs, x_idxs = np.nonzero(img)  # (row, col) indexes to edges
 
   # Vote in the hough accumulator
@@ -28,14 +28,26 @@ def hough_line(img):
 
   return accumulator, thetas, rhos
 
+if __name__ == '__main__':
+    # Create binary image and call hough_line
+    image = np.zeros((50,50))
+    image[10:40, 10:40] = np.eye(30)
 
-# Create binary image and call hough_line
-image = np.zeros((50,50))
-image[10:40, 10:40] = np.eye(30)
-accumulator, thetas, rhos = hough_line(image)
+    accumulator, thetas, rhos = hough_line(image)
 
-# Easiest peak finding based on max votes
-idx = np.argmax(accumulator)
-rho = rhos[idx / accumulator.shape[1]]
-theta = thetas[idx % accumulator.shape[1]]
-print("rho={0:.2f}, theta={1:.0f}".format(rho, np.rad2deg(theta)))
+    # Easiest peak finding based on max votes
+    idx = np.argmax(accumulator)
+    rho = rhos[idx / accumulator.shape[1]]
+    theta = thetas[idx % accumulator.shape[1]]
+    print("rho={0:.2f}, theta={1:.0f}".format(rho, np.rad2deg(theta)))
+
+
+    # for row in range(len(image)):
+    #     for col in range(row):
+    #         print(image[row][col], end=" ")
+    #     print()
+    # arr = np.zeros((10,10))
+    # print(arr)
+    # arr[5:9, 5:9] = np.eye(4)
+    # print('-------------------')
+    # print(arr)
