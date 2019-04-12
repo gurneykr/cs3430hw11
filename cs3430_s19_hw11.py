@@ -153,18 +153,18 @@ def ht_detect_lines(img_fp, magn_thresh=20, spl=20):
         for theta in range(HT.shape[1]):
             if HT[rho, theta] >= spl:
                 theta = thetas[theta]
-                pho = rho - diag_len
-                a = math.cos(theta)
-                b = math.sin(theta)
-                x0 = a * pho
-                y0 = b * pho
-                x1 = int(x0 + 10000 * (-b))
-                y1 = int(y0 + 10000 * (a))
-                x2 = int(x0 - 10000 * (-b))
-                y2 = int(y0 - 10000 * (a))
+                # pho = rho - diag_len
+                a = np.cos(theta)
+                b = np.sin(theta)
+                x0 = a * rho#pho
+                y0 = b * rho#pho
+                x1 = int(x0 + 1000 * (-b))
+                y1 = int(y0 + 1000 * (a))
+                x2 = int(x0 - 1000 * (-b))
+                y2 = int(y0 - 1000 * (a))
                 draw = ImageDraw.Draw(blue_line_img)
-                draw.line((x1, y1, x2, y2), fill=(0, 0, 255))
-                # cv2.line(image, (x1, y1), (x2, y2), 120)
+                draw.line([(x1, y1),(x2, y2)], fill=(0, 0, 255))
+                # cv2.line(blue_line_img, (x1, y1), (x2, y2), (255, 0, 0), 2)
                 # x = abs(int(rho * math.cos(theta)))
                 # y = abs(int(rho * math.sin(theta)))
                 # if (x < blue_line_img.size[0] and y < blue_line_img.size[1]):
