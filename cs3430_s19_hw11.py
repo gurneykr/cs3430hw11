@@ -8,7 +8,7 @@
 
 ## add your imports here
 import math
-from PIL import Image
+from PIL import Image, ImageDraw
 import sys
 import numpy as np
 import cv2
@@ -145,19 +145,33 @@ def ht_detect_lines(img_fp, magn_thresh=20, spl=20):
     input_image = Image.open(img_fp)
     edimg = gd_detect_edges(input_image, magn_thresh=20)
     # print("shape: ",edimg.shape)
-    HT = hough_line(edimg)
+    HT, thetas, diag_len = hough_line(edimg)
     blue_line_img = input_image.copy()
+
 
     for rho in range(HT.shape[0]):
         for theta in range(HT.shape[1]):
             if HT[rho, theta] >= spl:
-                x = abs(int(rho * math.cos(theta)))
-                y = abs(int(rho * math.sin(theta)))
-                if (x < blue_line_img.size[0] and y < blue_line_img.size[1]):
-                    blue_line_img.putpixel((x, y), (0, 0, 255))
-                else:
-                    print('out of bounds')
-                # blue_line_img.putpixel((x, y), (0, 0, 255))
+                theta = thetas[theta]
+                pho = rho - diag_len
+                a = math.cos(theta)
+                b = math.sin(theta)
+                x0 = a * pho
+                y0 = b * pho
+                x1 = int(x0 + 10000 * (-b))
+                y1 = int(y0 + 10000 * (a))
+                x2 = int(x0 - 10000 * (-b))
+                y2 = int(y0 - 10000 * (a))
+                draw = ImageDraw.Draw(blue_line_img)
+                draw.line((x1, y1, x2, y2), fill=(0, 0, 255))
+                # cv2.line(image, (x1, y1), (x2, y2), 120)
+                # x = abs(int(rho * math.cos(theta)))
+                # y = abs(int(rho * math.sin(theta)))
+                # if (x < blue_line_img.size[0] and y < blue_line_img.size[1]):
+                #     blue_line_img.putpixel((x, y), (0, 0, 255))
+                # else:
+                #     print('out of bounds')
+                # # blue_line_img.putpixel((x, y), (0, 0, 255))
 
 
     return img_fp, blue_line_img, edimg, HT

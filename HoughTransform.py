@@ -26,7 +26,7 @@ def hough_line(img):
       rho = int(round(x * cos_t[t_idx] + y * sin_t[t_idx]) + diag_len)
       HT[rho, t_idx] += 1
 
-  return HT
+  return HT, thetas, diag_len
       # , thetas, rhos
 
 # if __name__ == '__main__':
