@@ -6,12 +6,13 @@ import cv2
 
 def gd_detect_edges(rgb_img, magn_thresh=20):
     greyed = rgb_img.copy()
-    cv2.cvtColor(rgb_img, greyed, cv2.COLOR_BGR2GRAY)
+    # cv2.cvtColor(rgb_img, greyed, cv2.COLOR_BGR2GRAY)
+    greyed = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
 
-    for row in range(greyed.size[0]):
+    for row in range(greyed.shape[0]):
         if row > 0:
-            for col in range(greyed.size[1]):
-                if col > 1 and col < greyed.size[1]-1 and row > 1 and row < greyed.size[0]-1:
+            for col in range(greyed.shape[1]):
+                if col > 1 and col < greyed.shape[1]-1 and row > 1 and row < greyed.shape[0]-1:
                     above = greyed.item(row-1, col)
                     below = greyed.item(row+1, col)
                     right = greyed.item(row, col+1)
@@ -30,7 +31,7 @@ def gd_detect_edges(rgb_img, magn_thresh=20):
 
 
 def create_hough_matrix(image, rho_resolution=1, theta_resolution=1):
-    height, width = image.size  # we need height and width to calculate the diag
+    height, width = image.shape  # we need height and width to calculate the diag
     img_diagonal = np.ceil(np.sqrt(height ** 2 + width ** 2))  # a**2 + b**2 = c**2
 
     # y axis

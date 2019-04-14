@@ -128,7 +128,8 @@ def ht_test_01(img_fp, magn_thresh=20, spl=20):
                                              magn_thresh=magn_thresh,
                                              spl=spl)
     # lnimg = ht_detect_lines(img_fp, magn_thresh, spl)
-    lnimg.save('im01_ln.png')
+    cv2.imwrite('im01_ln.png', lnimg)
+    # lnimg.save('im01_ln.png')
     edimg.save('im01_ed.png')
     del img
     del lnimg
