@@ -23,7 +23,7 @@ from maker import make_pwr_expr, make_e_expr
 from plus import plus
 from prod import prod
 from deriv import deriv
-from HoughTransform import hough_line
+from HoughTransform import ht_detect_lines
 
 ################# Problem 1 (1 point) ###################
 
@@ -113,78 +113,8 @@ def nra_ut_10():
 
 
 # =================== Problem 2 (4 points) ===================
-def gd_detect_edges(rgb_img, magn_thresh=20):
-    ## gray scale image
-    greyed = rgb_img.convert('L')
-    img = Image.new('L', greyed.size)
+#ht_detect_lines is in HoughTransform.py
 
-    for row in range(img.size[0]):
-        if row > 0:
-            for col in range(img.size[1]):
-                if col > 1 and col < greyed.size[1]-1 and row > 1 and row < greyed.size[0]-1:
-                    # pixel = greyed.getpixel((row, col))
-                    above = greyed.getpixel((row-1, col))
-                    below = greyed.getpixel((row+1, col))
-                    right = greyed.getpixel((row, col+1))
-                    left = greyed.getpixel((row, col-1))
-                    dy = above - below
-                    dx = right - left
-                    if dx == 0:
-                        dx = 1
-                    G = math.sqrt(dy**2 + dx**2)
-                    if G > magn_thresh:
-                        img.putpixel((row, col), 255)
-                    else:
-                        img.putpixel((row, col), 0)
-
-    return img
-
-
-def ht_detect_lines(img_fp, magn_thresh=20, spl=20):
-    ## your code here
-    input_image = Image.open(img_fp)
-    edimg = gd_detect_edges(input_image, magn_thresh=20)
-    # print("shape: ",edimg.shape)
-    HT, thetas, diag_len = hough_line(edimg)
-    blue_line_img = input_image.copy()
-
-
-    for rho in range(HT.shape[0]):
-        for theta in range(HT.shape[1]):
-            if HT[rho, theta] >= spl:
-                theta = thetas[theta]
-                # pho = rho - diag_len
-                a = np.cos(theta)
-                b = np.sin(theta)
-                x0 = a * rho#pho
-                y0 = b * rho#pho
-                x1 = int(x0 + 1000 * (-b))
-                y1 = int(y0 + 1000 * (a))
-                x2 = int(x0 - 1000 * (-b))
-                y2 = int(y0 - 1000 * (a))
-                draw = ImageDraw.Draw(blue_line_img)
-                draw.line([(x1, y1),(x2, y2)], fill=(0, 0, 255))
-                # cv2.line(blue_line_img, (x1, y1), (x2, y2), (255, 0, 0), 2)
-                # x = abs(int(rho * math.cos(theta)))
-                # y = abs(int(rho * math.sin(theta)))
-                # if (x < blue_line_img.size[0] and y < blue_line_img.size[1]):
-                #     blue_line_img.putpixel((x, y), (0, 0, 255))
-                # else:
-                #     print('out of bounds')
-                # # blue_line_img.putpixel((x, y), (0, 0, 255))
-
-
-    return img_fp, blue_line_img, edimg, HT
-
-    # del input_image
-
-    # return edges
-    #1. create a rho-theta table
-
-    #2. compute gradients
-    #3. compute HT values
-    #4.
-    # return edges
 ################ Unit Tests for Problem 2 ####################
 ##        
 ## I used Image for edge detection and numpy image representation
@@ -315,5 +245,6 @@ def ht_test_12(img_fp, magn_thresh=20, spl=20):
     del edimg
     
 if __name__ == '__main__':
-    ht_test_01('img/horline.png', magn_thresh=20, spl=20)
     pass
+    ht_test_01('img/kitchen.jpeg', magn_thresh=20, spl=20)
+
