@@ -115,6 +115,8 @@ def nra_ut_10():
 # =================== Problem 2 (4 points) ===================
 #ht_detect_lines is in HoughTransform.py
 
+
+
 ################ Unit Tests for Problem 2 ####################
 ##        
 ## I used Image for edge detection and numpy image representation
@@ -128,8 +130,8 @@ def ht_test_01(img_fp, magn_thresh=20, spl=20):
                                              magn_thresh=magn_thresh,
                                              spl=spl)
     # lnimg = ht_detect_lines(img_fp, magn_thresh, spl)
-    cv2.imwrite('im01_ln.png', lnimg)
-    # lnimg.save('im01_ln.png')
+    # cv2.imwrite('im01_ln.png', lnimg)
+    lnimg.save('im01_ln.png')
     edimg.save('im01_ed.png')
     del img
     del lnimg
@@ -246,6 +248,6 @@ def ht_test_12(img_fp, magn_thresh=20, spl=20):
     del edimg
     
 if __name__ == '__main__':
+    # ht_test_01('img/pentagon.png', magn_thresh=20, spl=20)
+    # ht_test_01('img/tiles.jpeg', magn_thresh=20, spl=20)
     pass
-    ht_test_01('img/kitchen.jpeg', magn_thresh=20, spl=20)
-

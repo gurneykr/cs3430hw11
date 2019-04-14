@@ -1,0 +1,3 @@
+Instead of using cv2 images I used Images so instead of running
+ cv2.imwrite('im01_ln.png', lnimg) in the tests I ran:
+ lnimg.save('im01_ln.png')

@@ -5,33 +5,33 @@ import cv2
 
 
 def gd_detect_edges(rgb_img, magn_thresh=20):
-    greyed = rgb_img.copy()
-    # cv2.cvtColor(rgb_img, greyed, cv2.COLOR_BGR2GRAY)
-    greyed = cv2.cvtColor(rgb_img, cv2.COLOR_BGR2GRAY)
+    # gray scale image
+    greyed = rgb_img.convert('L')
+    img = Image.new('L', greyed.size)
 
-    for row in range(greyed.shape[0]):
+    for row in range(img.size[0]):
         if row > 0:
-            for col in range(greyed.shape[1]):
-                if col > 1 and col < greyed.shape[1]-1 and row > 1 and row < greyed.shape[0]-1:
-                    above = greyed.item(row-1, col)
-                    below = greyed.item(row+1, col)
-                    right = greyed.item(row, col+1)
-                    left = greyed.item(row, col-1)
+            for col in range(img.size[1]):
+                if col > 1 and col < greyed.size[1]-1 and row > 1 and row < greyed.size[0]-1:
+                    above = greyed.getpixel((row-1, col))
+                    below = greyed.getpixel((row+1, col))
+                    right = greyed.getpixel((row, col+1))
+                    left = greyed.getpixel((row, col-1))
                     dy = above - below
                     dx = right - left
                     if dx == 0:
                         dx = 1
                     G = math.sqrt(dy**2 + dx**2)
                     if G > magn_thresh:
-                        greyed[row, col] = 255
+                        img.putpixel((row, col), 255)
                     else:
-                        greyed[row, col] = 0
+                        img.putpixel((row, col), 0)
 
-    return greyed
+    return img
 
 
 def create_hough_matrix(image, rho_resolution=1, theta_resolution=1):
-    height, width = image.shape  # we need height and width to calculate the diag
+    height, width = image.size  # we need height and width to calculate the diag
     img_diagonal = np.ceil(np.sqrt(height ** 2 + width ** 2))  # a**2 + b**2 = c**2
 
     # y axis
@@ -61,10 +61,7 @@ def create_hough_matrix(image, rho_resolution=1, theta_resolution=1):
     return H, rhos, thetas
 
 
-# Find the peak numbers in the Hough Matrix. The number to find is spl and they must be greater than the threshold
-# nhood_size (neighborhood size) is used to set the values around a maximum to zero
-# so that they won't be false positives
-def find_hough_peaks(H, spl, threshold=0, nhood_size=3):
+def find_hough_peaks(H, spl=30, threshold=0, nhood_size=3):
     # This will hold the coordinates of where the maxima were found
     indicies = []
 
@@ -140,13 +137,14 @@ def draw_hough_lines(image, indicies, thetas, rhos):
         x2 = int(x0 - 1000 * (-b))
         y2 = int(y0 - 1000 * a)
 
-        cv2.Line(lnimg, (x1, y1), (x2, y2), fill=(0, 0, 255), width=3)
+        draw = ImageDraw.Draw(lnimg)
+        draw.line([(x1, y1), (x2, y2)], fill=(0, 0, 255))
 
     return lnimg
 
 def ht_detect_lines(image_file_path, magn_thresh, spl=20, nhood_size=3):
     # Load the file
-    image = cv2.imread(image_file_path)
+    image = Image.open(image_file_path)
 
     # Get the edge file
     edge_image = gd_detect_edges(image, magn_thresh)
@@ -161,6 +159,3 @@ def ht_detect_lines(image_file_path, magn_thresh, spl=20, nhood_size=3):
     lnimg = draw_hough_lines(image, indicies, thetas, rhos)
 
     return image, lnimg, edge_image, ht
-
-
-
